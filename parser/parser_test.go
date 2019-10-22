@@ -60,3 +60,22 @@ func TestParseRange(t *testing.T) {
 		}
 	}
 }
+
+func TestParseFuncParamRange(t *testing.T) {
+	src := "FUNC(A1:D3)"
+	e, err := parse(src)
+	if err != nil {
+		t.Errorf("ParseExpr(%q) %v", src, err)
+	}
+	if n, ok := e.(*ast.FuncType); !ok {
+		t.Errorf("ParseExpr(%q): got %T, want *ast.FuncType", src, e)
+	} else {
+		if r, ok := n.Params.List[0].Type.(*ast.BasicLit); !ok {
+			t.Errorf("ParseExpr(%q): unexpected param type %T", src, n.Params.List[0].Type)
+		} else {
+			if r.Value != "A1:D3" {
+				t.Errorf("ParseExpr(%q): unexpected range value: %s", src, r.Value)
+			}
+		}
+	}
+}
