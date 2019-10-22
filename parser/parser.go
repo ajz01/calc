@@ -83,7 +83,7 @@ func (p *parser) error(pos token.Pos, msg string) {
 func (p *parser) parseIdent() *ast.Ident {
 	pos := p.pos
 	name := "_"
-	if p.tok == token.IDENT { //|| p.tok == token.REF || p.tok == token.RNG {
+	if p.tok == token.IDENT {
 		name = p.lit
 		p.next()
 	}
@@ -155,7 +155,7 @@ func (p *parser) parseType() ast.Expr {
 		defer un(trace(p, "Type"))
 	}
 
-	typ := p.tryType()
+	typ := p.tryIdentOrType()//p.tryType()
 
 	if typ == nil {
 		pos := p.pos
@@ -166,30 +166,6 @@ func (p *parser) parseType() ast.Expr {
 	return typ
 }
 
-func (p *parser) parseTypeName() ast.Expr {
-	if p.trace {
-		defer un(trace(p, "TypeName"))
-	}
-
-	ident := p.parseIdent()
-
-	return ident
-}
-
-func (p *parser) tryVarType(isParam bool) ast.Expr {
-	return p.tryIdentOrType()
-}
-
-func (p *parser) parseVarType(isParam bool) ast.Expr {
-	typ := p.tryVarType(isParam)
-	if typ == nil {
-		pos := p.pos
-		p.next()
-		typ = &ast.BadExpr{From: pos, To: p.pos}
-	}
-	return typ
-}
-
 func (p *parser) parseParameterList(isParam bool) (params []*ast.Field) {
 	if p.trace {
 		defer un(trace(p, "ParameterList"))
@@ -197,7 +173,7 @@ func (p *parser) parseParameterList(isParam bool) (params []*ast.Field) {
 
 	var list []ast.Expr
 	for {
-		list = append(list, p.parseExpr(true)) //parseIdent())//p.parseVarType(isParam))
+		list = append(list, p.parseExpr(true))
 		if p.tok != token.COMMA {
 			break
 		}
@@ -253,7 +229,7 @@ func (p *parser) parseFuncType() *ast.FuncType {
 func (p *parser) tryIdentOrType() ast.Expr {
 	switch p.tok {
 	case token.IDENT, token.REF, token.RNG:
-		return p.parseTypeName()
+		return p.parseIdent()//p.parseTypeName()
 	case token.LPAREN:
 		lparen := p.pos
 		p.next()
@@ -263,11 +239,6 @@ func (p *parser) tryIdentOrType() ast.Expr {
 	}
 
 	return nil
-}
-
-func (p *parser) tryType() ast.Expr {
-	typ := p.tryIdentOrType()
-	return typ
 }
 
 func (p *parser) parseFuncTypeOrLit() ast.Expr {
@@ -296,7 +267,7 @@ func (p *parser) parseOperand(lhs bool) ast.Expr {
 	case token.LPAREN:
 		lparen := p.pos
 		p.next()
-		x := p.parseRhsOrType()
+		x := p.parseRhs()//p.parseRhsOrType()
 		rparen := p.expect(token.RPAREN)
 		return &ast.ParenExpr{Lparen: lparen, X: x, Rparen: rparen}
 
@@ -334,15 +305,6 @@ func unparen(x ast.Expr) ast.Expr {
 	return x
 }
 
-func (p *parser) checkExprOrType(x ast.Expr) ast.Expr {
-	switch unparen(x).(type) {
-	case *ast.ParenExpr:
-		panic("unreachable")
-	}
-
-	return x
-}
-
 func (p *parser) parseCall(fun ast.Expr) *ast.CallExpr {
 	if p.trace {
 		defer un(trace(p, "Call"))
@@ -351,7 +313,7 @@ func (p *parser) parseCall(fun ast.Expr) *ast.CallExpr {
 	lparen := p.expect(token.LPAREN)
 	var list []ast.Expr
 	for p.tok != token.RPAREN && p.tok != token.EOF {
-		list = append(list, p.parseRhsOrType())
+		list = append(list, p.parseRhs())
 		if !p.atComma("argument list", token.RPAREN) {
 			break
 		}
@@ -384,7 +346,7 @@ L:
 	for {
 		switch p.tok {
 		case token.LPAREN:
-			x = p.parseCall(p.checkExprOrType(x))
+			x = p.parseCall(p.checkExpr(x))
 		default:
 			break L
 		}
@@ -448,14 +410,6 @@ func (p *parser) parseRhs() ast.Expr {
 	old := p.inRhs
 	p.inRhs = true
 	x := p.checkExpr(p.parseExpr(false))
-	p.inRhs = old
-	return x
-}
-
-func (p *parser) parseRhsOrType() ast.Expr {
-	old := p.inRhs
-	p.inRhs = true
-	x := p.checkExprOrType(p.parseExpr(false))
 	p.inRhs = old
 	return x
 }
