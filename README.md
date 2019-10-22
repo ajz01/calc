@@ -1,5 +1,6 @@
-# A spreadsheet formula parser based on the go compiler code.
+# A spreadsheet formula parser based on the go compiler.
 
 This package uses parts of the go scanner and parser that
-work with expressions and functions and includes some minor
-modifications to handle cell references and ranges.
+handle expressions, functions, and parameter lists and 
+includes some minor modifications to handle formula 
+specific tokens such as cell references and ranges.
