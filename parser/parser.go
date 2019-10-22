@@ -229,7 +229,7 @@ func (p *parser) parseFuncType() *ast.FuncType {
 func (p *parser) tryIdentOrType() ast.Expr {
 	switch p.tok {
 	case token.IDENT, token.REF, token.RNG:
-		return p.parseIdent()//p.parseTypeName()
+		return p.parseIdent()
 	case token.LPAREN:
 		lparen := p.pos
 		p.next()
@@ -239,14 +239,6 @@ func (p *parser) tryIdentOrType() ast.Expr {
 	}
 
 	return nil
-}
-
-func (p *parser) parseFuncTypeOrLit() ast.Expr {
-	if p.trace {
-		defer un(trace(p, "FuncTypeOrLit"))
-	}
-
-	return p.parseFuncType()
 }
 
 func (p *parser) parseOperand(lhs bool) ast.Expr {
@@ -267,12 +259,12 @@ func (p *parser) parseOperand(lhs bool) ast.Expr {
 	case token.LPAREN:
 		lparen := p.pos
 		p.next()
-		x := p.parseRhs()//p.parseRhsOrType()
+		x := p.parseRhs()
 		rparen := p.expect(token.RPAREN)
 		return &ast.ParenExpr{Lparen: lparen, X: x, Rparen: rparen}
 
 	case token.FUNC:
-		return p.parseFuncTypeOrLit()
+		return p.parseFuncType()
 	}
 
 	// we have an error
