@@ -15,7 +15,7 @@ const (
 	CELL  // Cell reference
 	ERR   // #ERROR!
 	ERREF // #REF!
-	FUNC  // Built-in functions
+	//FUNC  // Built-in functions
 	RNG
 	REF
 	SHEET  // Sheet name
@@ -67,7 +67,7 @@ var tokens = [...]string{
 	CELL:   "CELL",
 	ERR:    "ERR",
 	ERREF:  "ERREF",
-	FUNC:   "FUNC",
+	//FUNC:   "FUNC",
 	REF:    "REF",
 	RNG:    "RNG",
 	SHEET:  "SHEET",

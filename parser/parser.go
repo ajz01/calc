@@ -215,7 +215,7 @@ func (p *parser) parseSignature() (params *ast.FieldList) {
 	return
 }
 
-func (p *parser) parseFuncType() *ast.FuncType {
+/*func (p *parser) parseFuncType() *ast.FuncType {
 	if p.trace {
 		defer un(trace(p, "FuncType"))
 	}
@@ -224,7 +224,7 @@ func (p *parser) parseFuncType() *ast.FuncType {
 	params := p.parseSignature()
 
 	return &ast.FuncType{Func: pos, Params: params}
-}
+}*/
 
 func (p *parser) tryIdentOrType() ast.Expr {
 	switch p.tok {
@@ -263,8 +263,8 @@ func (p *parser) parseOperand(lhs bool) ast.Expr {
 		rparen := p.expect(token.RPAREN)
 		return &ast.ParenExpr{Lparen: lparen, X: x, Rparen: rparen}
 
-	case token.FUNC:
-		return p.parseFuncType()
+	//case token.FUNC:
+		//return p.parseFuncType()
 	}
 
 	// we have an error
