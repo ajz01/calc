@@ -317,7 +317,7 @@ func (s *Scanner) Scan() (pos token.Pos, tok token.Token, lit string) {
 		var ref bool
 		lit, ref = s.scanIdentifier()
 		if s.ch == '(' {
-			tok = token.FUNC
+			tok = token.IDENT//.FUNC
 		} else if ref {
 			if s.ch == ':' {
 				s.next()
