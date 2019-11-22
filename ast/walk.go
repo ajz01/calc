@@ -49,10 +49,10 @@ func Walk(v Visitor, node Node) {
 		Walk(v, n.X)
 		Walk(v, n.Y)
 
-	case *FuncType:
+	/*case *FuncType:
 		if n.Params != nil {
 			Walk(v, n.Params)
-		}
+		}*/
 
 	default:
 		panic(fmt.Sprintf("ast.Walk: unexpected node type %T", n))

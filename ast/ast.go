@@ -116,10 +116,10 @@ type (
 		Y     Expr
 	}
 
-	FuncType struct {
+	/*FuncType struct {
 		Func   token.Pos
 		Params *FieldList
-	}
+	}*/
 )
 
 func (x *BadExpr) Pos() token.Pos    { return x.From }
@@ -129,12 +129,12 @@ func (x *ParenExpr) Pos() token.Pos  { return x.Lparen }
 func (x *CallExpr) Pos() token.Pos   { return x.Fun.Pos() }
 func (x *UnaryExpr) Pos() token.Pos  { return x.OpPos }
 func (x *BinaryExpr) Pos() token.Pos { return x.X.Pos() }
-func (x *FuncType) Pos() token.Pos {
+/*func (x *FuncType) Pos() token.Pos {
 	if x.Func.IsValid() || x.Params == nil {
 		return x.Func
 	}
 	return x.Params.Pos()
-}
+}*/
 
 func (x *BadExpr) End() token.Pos    { return x.To }
 func (x *Ident) End() token.Pos      { return token.Pos(int(x.NamePos) + len(x.Name)) }
@@ -143,7 +143,7 @@ func (x *ParenExpr) End() token.Pos  { return x.Rparen + 1 }
 func (x *CallExpr) End() token.Pos   { return x.Rparen + 1 }
 func (x *UnaryExpr) End() token.Pos  { return x.X.End() }
 func (x *BinaryExpr) End() token.Pos { return x.Y.End() }
-func (x *FuncType) End() token.Pos   { return x.Params.End() }
+//func (x *FuncType) End() token.Pos   { return x.Params.End() }
 
 func (*BadExpr) exprNode()    {}
 func (*Ident) exprNode()      {}
@@ -152,4 +152,4 @@ func (*ParenExpr) exprNode()  {}
 func (*CallExpr) exprNode()   {}
 func (*UnaryExpr) exprNode()  {}
 func (*BinaryExpr) exprNode() {}
-func (*FuncType) exprNode()   {}
+//func (*FuncType) exprNode()   {}
