@@ -79,3 +79,14 @@ func TestParseFuncParamRange(t *testing.T) {
 		}
 	}
 }
+
+func TestParseFuncAreaRange(t *testing.T) {
+	src := "SUM(A2:B3)+SUM(C2:D3)"
+	e, err := parse(src)
+	if err != nil {
+		t.Errorf("ParseExpr(%q) %v", src, err)
+	}
+	if _, ok := e.(*ast.BinaryExpr); !ok {
+		t.Errorf("ParseExpr(%q): got %T, want *ast.BinaryExpr", src, e)
+	}
+}

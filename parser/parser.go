@@ -283,6 +283,7 @@ func (p *parser) checkExpr(x ast.Expr) ast.Expr {
 		panic("unreachable")
 	case *ast.UnaryExpr:
 	case *ast.BinaryExpr:
+	case *ast.CallExpr:
 	default:
 		p.errorExpected(x.Pos(), "expression")
 		x = &ast.BadExpr{From: x.Pos(), To: x.End()}
